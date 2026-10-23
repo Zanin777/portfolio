@@ -7,9 +7,9 @@
 <meta name="description" content="Portfólio de Matheus Zanin: desenvolvedor full-stack e criador de jogos.">
 <script>document.documentElement.classList.add("js")</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600&family=Syne:wght@800&family=Fraunces:ital,opsz,wght@0,9..144,500;1,9..144,500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600&family=JetBrains+Mono:wght@400;600&family=Syne:wght@800&family=Fraunces:ital,opsz,wght@0,9..144,500;1,9..144,500&display=swap" rel="stylesheet">
 <style>
-  :root { --bg:#f4f4f2; --ink:#0d0d0d; --mute:#6b6b6b; --strip:#2b2b2b; --strip2:#3a3a3a; --ease:cubic-bezier(.16,1,.3,1); }
+  :root { --bg:#f4f4f2; --ink:#0d0d0d; --mute:#6b6b6b; --strip:#2b2b2b; --strip2:#3a3a3a; --ease:cubic-bezier(.16,1,.3,1); --mono:"JetBrains Mono", ui-monospace, Consolas, monospace; }
   * { box-sizing:border-box; margin:0; padding:0; }
   html { scroll-behavior:smooth; }
   body { background:var(--bg); color:var(--ink); font-family:Archivo, system-ui, sans-serif; counter-reset:sec; }
@@ -62,9 +62,8 @@
   .cursor.lens span { font-size:10px; letter-spacing:2px; }
 
   /* ---------- HERO ---------- */
-  .hero { position:relative; height:calc(100vh - 170px); min-height:520px; overflow:hidden; }
-  /* film grain over the whole hero */
-  .hero::after { content:""; position:absolute; inset:-50%; z-index:4; pointer-events:none; opacity:.08; animation:grain .9s steps(4) infinite;
+  .hero { position:relative; height:calc(100vh - var(--sh, 170px)); min-height:520px; overflow:hidden; }
+  .hero::after { content:none;
                  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
   @keyframes grain { 25% { transform:translate(-3%,2%); } 50% { transform:translate(2%,-3%); } 75% { transform:translate(-2%,-1%); } }
 
@@ -110,7 +109,7 @@
   .meta b { font-size:14px; }
   .meta sup { font-size:.6em; vertical-align:.5em; }
   .meta .dots { letter-spacing:3px; opacity:.55; }
-  /* like the HD box on a streaming page; the border inverts with the text */
+  /* the main tech as an outlined tag; the border inverts with the text */
   .meta .badge { border:1px solid currentColor; padding:2px 5px 1px; font-size:9.5px; font-weight:600; letter-spacing:1px; text-transform:uppercase; line-height:1.2; }
   h1 { font-family:Syne; font-size:clamp(64px,10vw,150px); line-height:.9; letter-spacing:-.03em; white-space:nowrap; overflow:hidden; padding:.06em 0; margin:-.06em 0; }
   h1 span { display:inline-block; position:relative; }
@@ -129,7 +128,7 @@
   .like i { position:absolute; left:50%; top:50%; width:4px; height:4px; margin:-2px; border-radius:50%; background:currentColor; pointer-events:none; }
   .like i.ring { width:30px; height:30px; margin:-15px; background:none; border:1.5px solid currentColor; }
 
-  /* player readout on clean page above the tagline: pause, timecode, one segment per episode, counter and caption */
+  /* build readout on clean page above the tagline: pause, build timer, one segment per project, counter */
   .counter { position:absolute; right:48px; bottom:64px; z-index:2; font-family:Syne; font-size:44px; color:#fff; mix-blend-mode:difference; }
   .rd { display:flex; gap:12px; align-items:center; margin-bottom:10px; font:600 10px/1 Archivo, sans-serif; letter-spacing:1.5px; text-transform:uppercase; }
   .rd .state { position:relative; letter-spacing:inherit; }
@@ -147,7 +146,7 @@
   .tagline { position:absolute; right:48px; bottom:24px; z-index:2; font-family:Fraunces; font-size:clamp(18px,2vw,26px); color:#fff; mix-blend-mode:difference; }
 
   /* ---------- PROJECT STRIP ---------- */
-  .strip { display:grid; grid-template-columns:240px 1fr 1fr auto 230px 72px; height:170px; background:var(--strip); color:#eee; }
+  .strip { display:grid; grid-template-columns:240px 1fr 1fr auto 230px 72px; grid-template-rows:var(--sh, 170px); height:var(--sh, 170px); background:var(--strip); color:#eee; }
   .thumb, .next { position:relative; overflow:hidden; background:#1a1a1a; padding:14px; display:flex; align-items:flex-end; text-align:left;
                   transition:transform .7s var(--ease), box-shadow .7s var(--ease), scale .15s; }
   .thumb.tilt, .next.tilt { z-index:2; box-shadow:0 24px 50px rgba(0,0,0,.5); transition:transform .12s linear, box-shadow .7s var(--ease); }
@@ -164,19 +163,51 @@
           display:grid; place-items:center; transition:transform .3s var(--ease); }
   .thumb:hover .play { transform:translate(-50%,-50%) scale(1.12); }
   .play::after { content:""; border-left:14px solid var(--ink); border-top:9px solid transparent; border-bottom:9px solid transparent; margin-left:4px; }
-  /* while episodes play, the disc shows an equalizer; paused, the triangle comes back */
-  .play i { display:none; width:3px; height:16px; margin:0 1.5px; background:var(--ink); animation:eq .9s ease-in-out infinite; }
+  /* while projects rotate, the disc shows pause bars; paused, the triangle comes back */
+  .play i { display:none; width:4px; height:16px; margin:0 2.5px; background:var(--ink); }
+  .play i:nth-child(3) { display:none !important; }
   .play.on { display:flex; justify-content:center; align-items:center; }
   .play.on i { display:block; }
   .play.on i:nth-child(2) { animation-delay:-.24s; }
   .play.on i:nth-child(3) { animation-delay:-.48s; }
   .play.on::after { content:none; }
   @keyframes eq { 50% { transform:scaleY(.35); } }
-  .thumb small { position:relative; font-size:11px; text-transform:uppercase; letter-spacing:.5px; }
+  .thumb small { position:relative; font-size:11px; text-transform:uppercase; letter-spacing:.5px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  /* thumbnail as a project being built: repo path, corner marks, a progress ring around the button, a build line */
+  .thumb .path { position:absolute; top:12px; left:14px; font:500 10px var(--mono); letter-spacing:.3px; opacity:.85; }
+  .corners { position:absolute; inset:8px; pointer-events:none; opacity:.55;
+             background:linear-gradient(#fff,#fff) left top / 10px 1px no-repeat, linear-gradient(#fff,#fff) left top / 1px 10px no-repeat,
+                        linear-gradient(#fff,#fff) right top / 10px 1px no-repeat, linear-gradient(#fff,#fff) right top / 1px 10px no-repeat,
+                        linear-gradient(#fff,#fff) left bottom / 10px 1px no-repeat, linear-gradient(#fff,#fff) left bottom / 1px 10px no-repeat,
+                        linear-gradient(#fff,#fff) right bottom / 10px 1px no-repeat, linear-gradient(#fff,#fff) right bottom / 1px 10px no-repeat; }
+  .ring { position:absolute; left:50%; top:50%; width:66px; height:66px; translate:-50% -50%; rotate:-90deg; fill:none; stroke-width:1.5; pointer-events:none; }
+  .ring circle { stroke:rgba(255,255,255,.2); }
+  .ring #ringp { stroke:#f4f4f2; stroke-dasharray:188.5; stroke-dashoffset:188.5; }
+  .tfoot { position:relative; width:100%; display:grid; gap:6px; }
+  .bld { display:flex; align-items:center; gap:8px; font:500 10px var(--mono); color:#ddd; }
+  .bld b { min-width:4ch; font-weight:600; color:#fff; }
+  .bld i { flex:1; height:2px; background:rgba(255,255,255,.2); }
+  .bld s { display:block; height:100%; background:#f4f4f2; transform:scaleX(0); transform-origin:left; }
+  .trow { display:flex; align-items:center; justify-content:space-between; gap:8px; min-width:0; }
+  .tbadge { flex:none; border:1px solid rgba(255,255,255,.6); padding:1px 5px; font:600 9px var(--mono); letter-spacing:1px; text-transform:uppercase; }
   .col { padding:18px 24px; font-size:12px; line-height:1.5; color:#cfcfcf; display:flex; flex-direction:column; }
   .col h4 { font-family:Fraunces; font-style:italic; font-weight:500; font-size:16px; color:#fff; margin-bottom:6px; }
   .col .arrow { margin-top:auto; font-size:20px; color:#999; }
   .col + .col { background:var(--strip2); }
+  /* editor panels: a file tab, numbered lines and grayscale syntax */
+  .code { padding:0; overflow:hidden; }
+  .tab { display:flex; align-items:center; gap:6px; height:30px; padding-left:14px; border-bottom:1px solid rgba(255,255,255,.08); font:500 10.5px var(--mono); color:#999; flex:none; }
+  .tab i { width:7px; height:7px; border-radius:50%; border:1px solid #666; }
+  .tab span { display:flex; align-items:center; height:100%; margin-left:8px; padding:0 12px; color:#e6e6e6; border-bottom:1px solid #f4f4f2; margin-bottom:-1px; background:rgba(255,255,255,.04); }
+  .src { list-style:none; counter-reset:ln; padding:9px 16px 9px 0; font:12px/1.6 var(--mono); color:#cfcfcf; }
+  .src li { counter-increment:ln; display:grid; grid-template-columns:38px 1fr; white-space:pre-wrap; }
+  .src li::before { content:counter(ln); text-align:right; padding-right:14px; color:#585858; }
+  .src .h { color:#fff; font-weight:600; }
+  .src .cm { color:#8d8d8d; }
+  .src .k { color:#fff; }
+  .src .s { color:#b9b9b9; }
+  .src .pn { color:#7a7a7a; }
+  .src .caret { color:#fff; animation:blink 1s steps(1) infinite; }
   #stack b { display:block; }
   .chips { display:flex; flex-wrap:wrap; gap:5px; margin-top:6px; }
   .chips span { border:1px solid #666; border-radius:99px; padding:1px 9px; font-size:11px; }
@@ -232,7 +263,7 @@
   .eplist li { border-top:1.5px solid var(--ink); }
   .eplist button { width:100%; display:grid; grid-template-columns:64px 1fr auto 28px; align-items:baseline; column-gap:24px; padding:22px 0; text-align:left; transition:opacity .3s; }
   .eplist .n { font:800 13px Syne, sans-serif; }
-  .eplist button[aria-current] .n::after { content:"● em exibição"; display:block; margin-top:6px; font:600 10px Archivo, sans-serif; letter-spacing:1.5px; text-transform:uppercase; }
+  .eplist button[aria-current] .n::after { content:"● HEAD"; display:block; margin-top:6px; font:600 10px Archivo, sans-serif; letter-spacing:1.5px; text-transform:uppercase; }
   .eplist .t { font-family:Syne; font-weight:800; font-size:clamp(30px,5vw,72px); line-height:1; letter-spacing:-.02em; transition:transform .6s var(--ease); }
   .eplist i { font:italic 500 20px Fraunces, serif; }
   .eplist small { grid-column:2 / 4; margin-top:8px; font-size:11px; letter-spacing:1.5px; text-transform:uppercase; color:var(--mute); }
@@ -298,6 +329,20 @@
   .colo, .liked { max-width:46ch; margin:0 auto 10px; }
   .credits p a { color:#bbb; }
 
+  /* code voice: labels, numbers and metadata speak monospace */
+  .meta, .rd, .ep, .soon, .now, .rhead span, .rhead span:last-child, .eplist .n, .eplist small, .ficha dt, .notes, .figcap b,
+  .credits dt, .colo, .dateline, .thumb small, .chips span, .curtain small, .tagline, .fin { font-family:var(--mono); font-style:normal; }
+  .rhead span:last-child, .dateline { font-size:12px; }
+  .meta { font-size:11px; }
+  .meta .tg { opacity:.8; }
+  .tagline { font-size:clamp(13px,1.2vw,16px); }
+  .tagline .pr { opacity:.6; }
+  .caret { animation:blink 1s steps(1) infinite; }
+  .fin { font-size:clamp(26px,3.5vw,44px); }
+  .figcap { display:none; }
+  .curtain small { font-size:clamp(13px,1.4vw,16px); opacity:.8; }
+  .curtain .ty { display:inline-block; overflow:hidden; white-space:nowrap; vertical-align:bottom; width:19ch; animation:type 1s .45s steps(19) both; }
+  @keyframes type { from { width:0; } }
   .js [data-reveal] { opacity:0; transform:translateY(32px); transition:opacity 1s var(--ease), transform 1s var(--ease); }
   .js [data-reveal].seen { opacity:1; transform:none; }
 
@@ -318,15 +363,18 @@
     .title { left:16px; right:16px; top:auto; bottom:118px; color:#fff; }
     .meta, h1, h1 + p, .like, .counter, .tagline { mix-blend-mode:normal; }
     .meta { flex-wrap:wrap; }
-    .meta .badge { display:none; }  /* keeps the episode line on one row, so the block never jumps */
+    .meta .badge, .meta .tg { display:none; }  /* keeps the episode line on one row, so the block never jumps */
     .actions a { background:transparent; color:#fff; border-color:#fff; }
     .actions a:first-child { background:#fff; color:var(--ink); border-color:#fff; }
     h1 { font-size:clamp(56px,18vw,110px); }
     .counter { left:16px; right:auto; bottom:18px; font-size:36px; }
     .figcap { display:none; }
     .tagline { right:16px; bottom:22px; }
-    .strip { grid-template-columns:1fr 1fr; height:auto; }
+    .strip { grid-template-columns:1fr 1fr; grid-template-rows:none; grid-auto-flow:dense; height:auto; }
+    .col { grid-column:1 / 3; }
     .thumb, .next { height:150px; }
+    .thumb .ep { display:none; }
+    .thumb .play, .thumb .ring { top:43%; }  /* shorter card: keeps the ring clear of the build line */
     .col { min-height:150px; }
     .nav { grid-column:1 / 3; justify-content:center; padding:12px; }
     .side { grid-column:1 / 3; writing-mode:horizontal-tb; transform:none; padding:16px; }
@@ -348,6 +396,8 @@
     .links { flex-wrap:wrap; gap:18px; }
     .credits dl div { gap:14px; }
   }
+  /* narrower desktops: the editor panels wrap more lines, so the strip grows and the hero gives up the space */
+  @media (min-width:861px) and (max-width:1150px) { :root { --sh:250px; } }
   /* the figure caption needs room beside the counter */
   @media (min-width:861px) and (max-width:1100px) { .figcap { display:none; } }
   /* squarer desktop windows: the photo widens with the hero height while the title is placed by width, so pose 02's hair
@@ -357,7 +407,7 @@
   @media (prefers-reduced-motion:reduce) {
     * { animation:none !important; transition:none !important; }
     html { scroll-behavior:auto; }
-    .rd { display:none; }
+    .rd, .bld, .ring { display:none; }
   }
 </style>
 </head>
@@ -366,11 +416,10 @@
 <div class="curtain" id="curtain" aria-hidden="true">
   <div>
     <b class="name"><span style="--k:0">Z</span><span style="--k:1">A</span><span style="--k:2">N</span><span style="--k:3">I</span><span style="--k:4">N</span></b>
-    <small>portfólio · temporada 2026</small>
+    <small><span class="ty">$ npm run portfolio</span></small>
   </div>
   <i class="c-bar"><b id="cbar"></b></i>
 </div>
-<div class="lb" aria-hidden="true"><i class="lbt"></i><i class="lbb"><small id="lbcap"></small></i></div>
 <div class="cursor" id="pointer" aria-hidden="true"><i></i><span id="clabel"></span></div>
 
 <section class="hero">
@@ -406,20 +455,24 @@
   </div>
 
   <div class="counter">
-    <div class="rd"><button class="state" id="pp" type="button">‖ Pausar</button><span id="tc" aria-hidden="true"></span></div>
+    <div class="rd"><button class="state" id="pp" type="button">‖ pausar</button><span id="tc" aria-hidden="true"></span></div>
     <i class="bar" id="segs" aria-hidden="true"></i><span class="clip"><span id="cur">01</span></span>/<sup id="tot">04</sup><span class="figcap" aria-hidden="true"><span class="clip"><span id="fig"></span></span></span>
   </div>
-  <div class="tagline">criando jogos <i class="amp">&amp;</i> sites</div>
+  <div class="tagline"><span class="pr">&gt;</span> criando jogos <i class="amp">&amp;</i> sites<span class="caret" aria-hidden="true">_</span></div>
 </section>
 
 <section class="strip" id="projeto" aria-label="Projetos">
-  <div class="thumb"><img class="shot" id="tshot" alt=""><span class="num" id="tnum"></span><span class="ep" id="ep"></span>
-    <button class="play on" id="pp2" type="button" aria-label="Pausar episódios"><i></i><i></i><i></i></button><small id="tname"></small></div>
-  <div class="col"><h4>Sinopse:</h4><p id="desc"></p><span class="arrow">⟶</span></div>
-  <div class="col"><h4>Stack:</h4><div id="stack"></div><span class="arrow">⟶</span></div>
+  <div class="thumb"><img class="shot" id="tshot" alt=""><span class="num" id="tnum"></span><i class="corners" aria-hidden="true"></i>
+    <span class="path" id="tpath"></span><span class="ep" id="ep"></span>
+    <svg class="ring" viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="30"/><circle id="ringp" cx="32" cy="32" r="30"/></svg>
+    <button class="play on" id="pp2" type="button" aria-label="Pausar projetos"><i></i><i></i><i></i></button>
+    <div class="tfoot"><span class="bld" aria-hidden="true">$ build <b id="bpct">0%</b><i><s id="bbar"></s></i></span>
+      <div class="trow"><small id="tname"></small><span class="tbadge" id="tbadge"></span></div></div></div>
+  <div class="col code"><div class="tab" aria-hidden="true"><i></i><i></i><i></i><span>README.md</span></div><ol class="src" id="readme"></ol></div>
+  <div class="col code"><div class="tab" aria-hidden="true"><i></i><i></i><i></i><span>projeto.json</span></div><ol class="src" id="stack"></ol></div>
   <div class="nav"><button id="prev" type="button" aria-label="Projeto anterior">‹</button><button id="nxt" type="button" aria-label="Próximo projeto">›</button></div>
   <button class="next" id="peek" type="button" aria-label="Ir para o próximo projeto" data-cursor="Próximo"><img class="shot" id="nshot" alt=""><span class="num" id="nnum"></span><span class="ep" id="nep"></span>
-    <span class="soon" aria-hidden="true">Começa em <span class="clip"><span id="cd">3</span></span></span><span id="nname"></span><i class="nline" id="nline" aria-hidden="true"></i></button>
+    <span class="soon" aria-hidden="true">carregando em <span class="clip"><span id="cd">3</span></span></span><span id="nname"></span><i class="nline" id="nline" aria-hidden="true"></i></button>
   <button class="side" id="side" type="button" data-cursor="Próximo">PRÓXIMO PROJETO</button>
 </section>
 
@@ -431,25 +484,25 @@
 </div>
 
 <section class="wrap eps" id="episodios" aria-labelledby="eps-h">
-  <div class="rhead"><b></b><span>Episódios</span><span>4 episódios · temporada 2026</span></div>
-  <h2 id="eps-h" class="sr-only">Episódios</h2>
+  <div class="rhead"><b></b><span>Projetos</span><span>4 repositórios · 2026</span></div>
+  <h2 id="eps-h" class="sr-only">Projetos</h2>
   <ol class="eplist" id="eplist"></ol>
   <figure class="epfig" id="epfig" aria-hidden="true"><img alt=""><figcaption></figcaption></figure>
 </section>
 
 <section class="wrap about" id="sobre">
-  <div class="rhead"><b></b><span>Bastidores</span><span>Matheus Zanin — portfólio, temporada 2026</span></div>
+  <div class="rhead"><b></b><span>Sobre</span><span>$ whoami → matheus</span></div>
   <div>
-    <h2 data-reveal>Por trás<br>das <i>câmeras</i>.</h2>
+    <h2 data-reveal>Por trás<br>do <i>código</i>.</h2>
     <canvas class="d20" id="d20" aria-hidden="true"></canvas>
   </div>
   <div>
     <p class="lead" data-reveal>Sou Matheus Zanin, desenvolvedor full-stack e criador de jogos. Escrevo o back-end, modelo no Blender, programo o gameplay e desenho a interface: do servidor ao <em>pixel</em>.</p>
-    <p data-reveal>Gosto de projetos com identidade: sites que vendem, jogos que dá vontade de explorar e código que não pesa. Cada projeto aqui é um episódio de uma temporada que ainda está sendo gravada.</p>
+    <p data-reveal>Gosto de projetos com identidade: sites que vendem, jogos que dá vontade de explorar e código que não pesa. Cada projeto aqui é um repositório vivo: ainda em desenvolvimento, sempre com o próximo commit a caminho.</p>
     <dl class="stats" data-reveal>
-      <div><dt><span class="clip"><span>04</span></span></dt><dd>projetos em cartaz</dd></div>
+      <div><dt><span class="clip"><span>04</span></span></dt><dd>projetos em desenvolvimento</dd></div>
       <div><dt><span class="clip"><span>03</span></span><sup><a href="#n1" id="r1" aria-label="nota 1">1</a></sup></dt><dd>engines: Unity, Godot e Three.js</dd></div>
-      <div><dt><span class="clip"><span>01</span></span><sup><a href="#n2" id="r2" aria-label="nota 2">2</a></sup></dt><dd>dev fazendo todos os papéis</dd></div>
+      <div><dt><span class="clip"><span>01</span></span><sup><a href="#n2" id="r2" aria-label="nota 2">2</a></sup></dt><dd>dev, do servidor ao pixel</dd></div>
     </dl>
     <h3 class="ficha-h" data-reveal>Ficha técnica</h3>
     <dl class="ficha" data-reveal>
@@ -460,15 +513,15 @@
     </dl>
     <ol class="notes">
       <li id="n1">Three.js é biblioteca, não engine — mas no Crimson Vigil fez o papel de uma. <a href="#r1" aria-label="voltar ao texto">↩</a></li>
-      <li id="n2">Direção, roteiro, código e arte 3D — confira nos <a href="#creditos">créditos ↓</a> <a href="#r2" aria-label="voltar ao texto">↩</a></li>
+      <li id="n2">Back-end, front-end, gameplay e arte 3D — confira nos <a href="#creditos">créditos ↓</a> <a href="#r2" aria-label="voltar ao texto">↩</a></li>
     </ol>
   </div>
 </section>
 
 <section class="wrap contact" id="contato">
-  <div class="rhead"><b></b><span>Próxima temporada</span><span>Cena 03 — ext. sua caixa de entrada — agora</span></div>
-  <p class="dateline">Brasil, <time data-date></time> · <span data-clock></span> (UTC−3)</p>
-  <h2 data-reveal>Tem um projeto?<br><i>Vamos gravar.</i></h2>
+  <div class="rhead"><b></b><span>Contato</span><span>POST /contato → 200 OK</span></div>
+  <p class="dateline">// Brasil, <time data-date></time> · <span data-clock></span> (UTC−3)</p>
+  <h2 data-reveal>Tem um projeto?<br><i>Vamos codar.</i></h2>
   <a class="mail" href="mailto:matheuszaninps4@gmail.com" data-reveal data-cursor="Escrever">matheuszaninps4@gmail.com <span aria-hidden="true"><b>↗</b></span></a>
   <div class="links" data-reveal>
     <a href="https://github.com/Zanin777" target="_blank" rel="noopener" data-cursor="Abrir ↗">GitHub</a>
@@ -480,25 +533,25 @@
 <footer class="credits" id="creditos">
   <h3>ZANIN</h3>
   <dl>
-    <div data-reveal style="--k:0"><dt>Direção</dt><dd>Matheus Zanin</dd></div>
-    <div data-reveal style="--k:1"><dt>Roteiro</dt><dd>Matheus Zanin</dd></div>
-    <div data-reveal style="--k:2"><dt>Código</dt><dd>Matheus Zanin</dd></div>
-    <div data-reveal style="--k:3"><dt>Arte 3D</dt><dd>Matheus Zanin</dd></div>
-    <div data-reveal style="--k:4"><dt>Trilha sonora</dt><dd>riffs do RiffForge</dd></div>
-    <div data-reveal style="--k:5"><dt>Tipografia</dt><dd>Syne, Fraunces <i class="amp">&amp;</i> Archivo</dd></div>
+    <div data-reveal style="--k:0"><dt>Autor</dt><dd>Matheus Zanin</dd></div>
+    <div data-reveal style="--k:1"><dt>Back-end</dt><dd>Java · Spring Boot</dd></div>
+    <div data-reveal style="--k:2"><dt>Front-end</dt><dd>HTML, CSS <i class="amp">&amp;</i> JavaScript</dd></div>
+    <div data-reveal style="--k:3"><dt>Jogos</dt><dd>Unity · Godot · Three.js</dd></div>
+    <div data-reveal style="--k:4"><dt>3D</dt><dd>Blender</dd></div>
+    <div data-reveal style="--k:5"><dt>Tipografia</dt><dd>Syne, Fraunces, Archivo <i class="amp">&amp;</i> JetBrains Mono</dd></div>
   </dl>
-  <p class="fin" data-reveal>continua…</p>
+  <p class="fin" data-reveal>// continua…</p>
   <p class="colo">Um único arquivo HTML, sem frameworks; animações com a Web Animations API. <span id="kb"></span></p>
-  <p class="liked" hidden>você curtiu esta temporada ♥</p>
-  <p>© 2026 · feito à mão em HTML, CSS e JavaScript · <a href="#" id="rewatch" data-cursor="Rever">↺ Rever do episódio 01</a></p>
+  <p class="liked" hidden>você curtiu este portfólio ♥</p>
+  <p>© 2026 · feito à mão em HTML, CSS e JavaScript · <a href="#" id="rewatch" data-cursor="Voltar">↺ voltar ao projeto 01</a></p>
 </footer>
 
 <script>
   const P = [
-    { name:"Crimson Vigil", tag:"jogo tático", desc:"RPG tático por turnos com mundo aberto explorável, movimento livre e HUD inspirada em BG3.", stack:["Three.js", "Unity 6", "C#", "Blender"] },
-    { name:"Guardião do Bosque", tag:"tower defense", desc:"Tower defense 2.5D com evolução de torres e ondas de inimigos.", stack:["Godot 4", "GDScript"] },
-    { name:"RiffForge", tag:"web app", desc:"Gerador de tablaturas e riffs de metal.", stack:["Spring Boot", "Java", "JavaScript"] },
-    { name:"Alchemist's Covenant", tag:"deck-builder", desc:"Deck-builder com tema alquímico e reações entre cartas.", stack:["JavaScript", "Canvas"] },
+    { name:"Crimson Vigil", tag:"jogo tático", desc:"RPG tático por turnos com mundo aberto explorável, movimento livre e HUD inspirada em BG3.", stack:["Three.js", "Unity 6", "C#", "Blender"], status:"v0.3 · em desenvolvimento" },
+    { name:"Guardião do Bosque", tag:"tower defense", desc:"Tower defense 2.5D com evolução de torres e ondas de inimigos.", stack:["Godot 4", "GDScript"], status:"M10 concluído · em playtest" },
+    { name:"RiffForge", tag:"web app", desc:"Gerador de tablaturas e riffs de metal.", stack:["Spring Boot", "Java", "JavaScript"], status:"em desenvolvimento" },
+    { name:"Alchemist's Covenant", tag:"deck-builder", desc:"Deck-builder com tema alquímico e reações entre cartas.", stack:["JavaScript", "Canvas"], status:"protótipo · base pronta" },
   ];
   const $ = id => document.getElementById(id), pad = n => String(n + 1).padStart(2, "0");
   const POSES = [...document.querySelectorAll(".pose")], LETTERS = [...document.querySelectorAll("h1 span")];
@@ -513,6 +566,7 @@
   const anim = (el, frames, opts) => calm ? null : el.animate(frames, { easing: EASE, fill: "backwards", ...opts });
   const rise = (el, delay = 0) => anim(el, [{ opacity: 0, transform: "translateY(16px)" }, { opacity: 1, transform: "none" }], { duration: 700, delay });
   const shot = (img, src, delay) => { img.src = src; anim(img, [{ opacity: 0, transform: "scale(1.25)" }, { opacity: 1, transform: "scale(1)" }], { duration: 1100, delay }); };
+  const slug = n => n.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f']/g, "").replace(/[^a-z0-9]+/g, "-");
   const cap = k => `<b>Fig. ${pad(k)}</b>${POSES[k].alt.replace(/^Matheus Zanin /, "")}`;
 
   // split-flap: the piece folds away edge-on, `swap` changes it while it is hidden, then it folds back in
@@ -551,7 +605,7 @@
     const p = P[i], n = (i + 1) % P.length, base = intro ? 500 : 0;
     pose(POSES[i % POSES.length], d, intro ? 350 : 150);
 
-    $("meta").innerHTML = `<span class="dots">${P.map((_, k) => k === i ? "●" : "○").join("")}</span><b>N<sup>º</sup>&thinsp;${pad(i)}</b> ${p.name}&thinsp;—&thinsp;${p.tag} <span class="badge">${p.stack[0]}</span>`;
+    $("meta").innerHTML = `<span class="dots">${P.map((_, k) => k === i ? "●" : "○").join("")}</span><b>#${pad(i)}</b> <span>~/${slug(p.name)}<span class="tg"> — ${p.tag}</span></span> <span class="badge">${p.stack[0]}</span>`;
     rise($("meta"), base + 200);
     LETTERS.forEach((l, k) => intro
       ? anim(l, [{ transform: "translateY(110%)" }, { transform: "none" }], { duration: 1000, delay: base + k * 60 })
@@ -561,18 +615,23 @@
     lensLabel = "";  // the lens over the photo stays wordless
     if (pointer.classList.contains("lens")) $("clabel").textContent = lensLabel;
 
-    $("ep").textContent = `EP. ${pad(i)}`;
+    $("ep").textContent = `// ${pad(i)}`;
     $("tnum").textContent = pad(i);
-    $("tname").innerHTML = `<b>${p.name}:</b> ${p.tag}`;
-    $("desc").textContent = p.desc;
-    $("stack").innerHTML = `<b>${p.name}</b><span class="chips">${p.stack.map(s => `<span>${s}</span>`).join("")}</span>`;
-    $("nep").textContent = `A seguir · EP. ${pad(n)}`;
+    $("tname").textContent = p.name;
+    $("tpath").textContent = `~/${slug(p.name)}`;
+    $("tbadge").textContent = p.stack[0];
+    // editor panels: markdown on the left, JSON on the right, each line numbered by CSS
+    const ln = l => `<li><span>${l}</span></li>`, str = v => `<span class="s">"${v}"</span>`, key = v => `<span class="k">"${v}"</span>`, pn = v => `<span class="pn">${v}</span>`;
+    $("readme").innerHTML = [`<span class="h"># ${p.name}</span>`, p.desc, "", `<span class="cm">&gt; status: ${p.status}</span><span class="caret" aria-hidden="true">▍</span>`].map(ln).join("");
+    $("stack").innerHTML = [pn("{"), `  ${key("tipo")}${pn(":")} ${str(p.tag)}${pn(",")}`, `  ${key("stack")}${pn(": [")}${p.stack.map(str).join(pn(", "))}${pn("],")}`,
+                            `  ${key("autor")}${pn(":")} ${str("Matheus Zanin")}`, pn("}")].map(ln).join("");
+    $("nep").textContent = `próximo · ${pad(n)}`;
     $("nnum").textContent = pad(n);
     $("nname").textContent = P[n].name;
     shot($("tshot"), POSES[i % POSES.length].src, base);
     shot($("nshot"), POSES[n % POSES.length].src, base + 120);
-    [$("tname"), $("desc"), $("nep"), $("nname")].forEach((el, k) => rise(el, base + 150 + k * 70));
-    $("stack").querySelectorAll("b, .chips span").forEach((el, k) => rise(el, base + 290 + k * 45));
+    [$("tname"), $("nep"), $("nname")].forEach((el, k) => rise(el, base + 150 + k * 70));
+    [...$("readme").children, ...$("stack").children].forEach((el, k) => rise(el, base + 200 + k * 45));
     [...$("eplist").querySelectorAll("button")].forEach((b, k) => b.toggleAttribute("aria-current", k === i));
   }
 
@@ -585,29 +644,33 @@
     if (calm) return;
     timer = segs.children[i].firstChild.animate([{ transform: "scaleX(0)" }, { transform: "scaleX(1)" }], { duration: 8000 });
     timer.onfinish = () => go(1);
-    lastS = 4; lastF = -1; $("cd").textContent = "3";  // lastF reset so the timecode shows the new episode at once
+    lastS = 4; lastF = -1; $("cd").textContent = "3";  // lastF reset so the build timer shows the new project at once
     sync();
     if (!raf) raf = requestAnimationFrame(tick);
   }
-  // timecode at 24fps, and the "Começa em 3" countdown on the next card during the last 3 seconds
+  // build timer, and the "carregando em 3" countdown on the next card during the last 3 seconds
   function tick() {
     raf = visible ? requestAnimationFrame(tick) : 0;
     const t = timer ? timer.currentTime || 0 : 0, f = Math.floor(t * .024);
     if (f !== lastF) {
       lastF = f;
-      $("tc").textContent = (innerWidth < 400 ? "" : `T1:E${pad(i)} · `) + `00:00:${String(Math.floor(f / 24)).padStart(2, "0")}:${String(f % 24).padStart(2, "0")}`;
+      $("tc").textContent = (innerWidth < 400 ? "" : `build ${pad(i)}/${String(P.length).padStart(2, "0")} · `) + `${(t / 1000).toFixed(2)}s`;
     }
     const left = 8000 - t, end = !!timer && left <= 3000;
     peek.classList.toggle("ending", end);
     $("nline").style.transform = `scaleX(${end ? Math.max(0, 1 - left / 3000) : 0})`;
+    const pr = timer ? Math.min(1, t / 8000) : 0, pct = pr > .995 ? "✓" : Math.floor(pr * 100) + "%" + (userPaused ? " ‖" : "");
+    $("ringp").style.strokeDashoffset = 188.5 * (1 - pr);
+    $("bbar").style.transform = `scaleX(${pr})`;
+    if ($("bpct").textContent !== pct) $("bpct").textContent = pct;
     const s = Math.ceil(left / 1000);
     if (end && s >= 1 && s < lastS) { lastS = s; if (s < 3) flap($("cd"), 1, 0, () => $("cd").textContent = s); }
   }
   function setPaused(v) {
     userPaused = v;
-    $("pp").textContent = v ? "▶ Retomar" : "‖ Pausar";
+    $("pp").textContent = v ? "▶ retomar" : "‖ pausar";
     $("pp2").classList.toggle("on", !v);
-    $("pp2").setAttribute("aria-label", v ? "Retomar episódios" : "Pausar episódios");
+    $("pp2").setAttribute("aria-label", v ? "Retomar projetos" : "Pausar projetos");
     sync();
   }
   $("pp").onclick = $("pp2").onclick = () => setPaused(!userPaused);
@@ -642,7 +705,7 @@
   }, { threshold: .35 }).observe(hero);
 
   // episode index
-  $("eplist").innerHTML = P.map((p, k) => `<li><button type="button" data-k="${k}" data-cursor="Assistir"><span class="n">${pad(k)}</span><span class="t">${p.name}</span><i>${p.tag}</i><span class="go" aria-hidden="true">↗</span><small>${p.stack.join(" · ")}</small></button></li>`).join("");
+  $("eplist").innerHTML = P.map((p, k) => `<li><button type="button" data-k="${k}" data-cursor="Abrir"><span class="n">${pad(k)}</span><span class="t">${p.name}</span><i>${p.tag}</i><span class="go" aria-hidden="true">↗</span><small>${p.stack.join(" · ")}</small></button></li>`).join("");
   $("eplist").onclick = e => { const b = e.target.closest("button"); if (b) jump(+b.dataset.k); };
   const epfig = $("epfig"), epimg = epfig.querySelector("img"), epcap = epfig.querySelector("figcaption");
   let fx = 0, fy = 0, ftx = 0, fty = 0, fraf = 0;
@@ -651,7 +714,7 @@
     epimg.src = im.src;
     epimg.style.setProperty("--lift", im.style.getPropertyValue("--lift") || "1.18");
     epimg.style.scale = im.hasAttribute("data-flip") ? "-1 1" : "";
-    epcap.textContent = `Ep. ${pad(k)} — ${P[k].name}`;
+    epcap.textContent = `${pad(k)} — ~/${slug(P[k].name)}`;
     epfig.classList.add("on");
   }
   const hidePrint = () => epfig.classList.remove("on");
@@ -876,37 +939,25 @@
   clock();
   setTimeout(() => { clock(); setInterval(clock, 60000); }, 60000 - Date.now() % 60000);
 
-  // credits: post-credits rewatch and the measured weight of this visit
+  // footer: back to project 01, and the measured weight of this visit
   $("rewatch").onclick = e => { e.preventDefault(); jump(0); };
   addEventListener("load", () => setTimeout(() => {
     const b = [...performance.getEntriesByType("navigation"), ...performance.getEntriesByType("resource")].reduce((s, e) => s + (e.transferSize || 0), 0);
     if (b > 0) $("kb").textContent = `Esta visita transferiu ${Math.round(b / 1024).toLocaleString("pt-BR")} KB.`;
   }, 1500));
 
-  // intro: wait for the poses (or give up after 4s), fade the curtain onto a widescreen letterbox, then open it
+  // intro: wait for the poses (or give up after 4s) while the command types itself, then lift the curtain
   let loaded = 0;
   const wait = ms => new Promise(r => setTimeout(r, ms));
   const loadOf = im => new Promise(r => im.complete ? r() : im.onload = im.onerror = r);
   const ready = Promise.all(POSES.map(im => loadOf(im).then(() => $("cbar").style.transform = `scaleX(${++loaded / POSES.length})`)));
   Promise.race([Promise.all([ready, wait(calm ? 0 : 1200)]), wait(4000)]).then(() => {
-    const c = $("curtain"), lb = document.querySelector(".lb");
+    const c = $("curtain");
     document.body.classList.remove("loading");
     render(1, true);
     document.querySelectorAll(".title p, .actions, .tagline, .counter").forEach((el, k) => rise(el, 700 + k * 80));
-    if (calm) { c.remove(); lb.remove(); return; }
-    const h = innerWidth > 860 ? Math.max(40, (innerHeight - innerWidth / 2.39) / 2) : innerHeight * .1;
-    lb.style.setProperty("--h", h + "px");
-    $("lbcap").textContent = `Episódio 01 — ${P[0].name}`;
-    c.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 300, fill: "forwards" }).onfinish = () => c.remove();
-    const LB = "cubic-bezier(.76,0,.24,1)";
-    const bar = (el, s) => el.animate([
-      { transform: "none", easing: LB },
-      { transform: `translateY(calc(${s}50vh ${s ? "+" : "-"} ${h}px))`, offset: .4 },
-      { transform: `translateY(calc(${s}50vh ${s ? "+" : "-"} ${h}px))`, offset: .72, easing: LB },
-      { transform: `translateY(${s}50vh)` }], { duration: 1700, delay: 250, fill: "forwards" });
-    bar(lb.children[0], "-");
-    bar(lb.children[1], "").onfinish = () => lb.remove();
-    $("lbcap").animate([{ opacity: 0 }, { opacity: 1, offset: .25 }, { opacity: 1, offset: .75 }, { opacity: 0 }], { duration: 900, delay: 650 });
+    if (calm) return c.remove();
+    c.animate([{ transform: "none" }, { transform: "translateY(-100%)" }], { duration: 1000, easing: "cubic-bezier(.76,0,.24,1)", fill: "forwards" }).onfinish = () => c.remove();
     autoplay();
   });
 </script>
