@@ -5,6 +5,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Matheus Zanin — portfólio</title>
 <meta name="description" content="Portfólio de Matheus Zanin: desenvolvedor full-stack e criador de jogos.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://zanin777.github.io/portfolio/">
+<meta property="og:title" content="Matheus Zanin — portfólio">
+<meta property="og:description" content="Desenvolvedor full-stack e criador de jogos: do servidor ao pixel.">
+<meta property="og:image" content="https://zanin777.github.io/portfolio/og.jpg">
+<meta property="og:locale" content="pt_BR">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23111'/%3E%3Cpath d='M9 9h14v3L13.5 20H23v3H9v-3l9.5-8H9z' fill='%23fff'/%3E%3C/svg%3E">
 <script>document.documentElement.classList.add("js")</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600&family=JetBrains+Mono:wght@400;600&family=Syne:wght@800&family=Fraunces:ital,opsz,wght@0,9..144,500;1,9..144,500&display=swap" rel="stylesheet">
@@ -433,8 +441,8 @@
 
   <div class="figure">
     <img class="pose on" src="foto2.webp" style="--left:-3%" alt="Matheus Zanin de óculos e luvas, segurando o celular">
-    <img class="pose" src="foto5.png" style="--zoom:1.3; --top:40px" alt="Matheus Zanin de óculos escuros, sobretudo e luvas, segurando o celular">
-    <img class="pose" src="foto3.png" style="--zoom:1.35; --top:24px; --mx:20%" alt="Matheus Zanin de terno e óculos escuros">
+    <img class="pose" src="foto5.webp" style="--zoom:1.3; --top:40px" alt="Matheus Zanin de óculos escuros, sobretudo e luvas, segurando o celular">
+    <img class="pose" src="foto3.webp" style="--zoom:1.35; --top:24px; --mx:20%" alt="Matheus Zanin de terno e óculos escuros">
     <img class="pose" src="foto4.webp" data-flip style="--zoom:1.25; --top:32px; --mx:20%" alt="Matheus Zanin de perfil, de gola alta">
   </div>
 
@@ -482,7 +490,7 @@
   <div class="rhead"><b></b><span>Projetos</span><span>4 repositórios · 2026</span></div>
   <h2 id="eps-h" class="sr-only">Projetos</h2>
   <ol class="eplist" id="eplist"></ol>
-  <figure class="epfig" id="epfig" aria-hidden="true"><img alt=""><figcaption></figcaption></figure>
+  <figure class="epfig" id="epfig" aria-hidden="true"><img src="foto2.webp" alt=""><figcaption></figcaption></figure>
 </section>
 
 <section class="wrap about" id="sobre">
@@ -545,7 +553,7 @@
   const P = [
     { name:"Crimson Vigil", tag:"jogo tático", desc:"RPG tático por turnos com mundo aberto explorável, movimento livre e HUD inspirada em BG3.", stack:["Three.js", "Unity 6", "C#", "Blender"], status:"v0.3 · em desenvolvimento" },
     { name:"Guardião do Bosque", tag:"tower defense", desc:"Tower defense 2.5D com evolução de torres e ondas de inimigos.", stack:["Godot 4", "GDScript"], status:"M10 concluído · em playtest" },
-    { name:"RiffForge", tag:"web app", desc:"Gerador de tablaturas e riffs de metal.", stack:["Spring Boot", "Java", "JavaScript"], status:"em desenvolvimento" },
+    { name:"RiffForge", tag:"web app", desc:"Gerador de tablaturas e riffs de metal.", stack:["Spring Boot", "Java", "JavaScript"], status:"em desenvolvimento", repo:"https://github.com/Zanin777/RiffForge" },
     { name:"Alchemist's Covenant", tag:"deck-builder", desc:"Deck-builder com tema alquímico e reações entre cartas.", stack:["JavaScript", "Canvas"], status:"protótipo · base pronta" },
   ];
   const $ = id => document.getElementById(id), pad = n => String(n + 1).padStart(2, "0");
@@ -617,7 +625,7 @@
     $("tbadge").textContent = p.stack[0];
     // editor panels: markdown on the left, JSON on the right, each line numbered by CSS
     const ln = l => `<li><span>${l}</span></li>`, str = v => `<span class="s">"${v}"</span>`, key = v => `<span class="k">"${v}"</span>`, pn = v => `<span class="pn">${v}</span>`;
-    $("readme").innerHTML = [`<span class="h"># ${p.name}</span>`, p.desc, "", `<span class="cm">&gt; status: ${p.status}</span><span class="caret" aria-hidden="true">▍</span>`].map(ln).join("");
+    $("readme").innerHTML = [`<span class="h"># ${p.name}</span>`, p.desc, "", `<span class="cm">&gt; status: ${p.status}</span><span class="caret" aria-hidden="true">▍</span>`, ...(p.repo ? [`<a class="h" href="${p.repo}" target="_blank" rel="noopener" data-cursor="Abrir ↗">$ open github ↗</a>`] : [])].map(ln).join("");
     $("stack").innerHTML = [pn("{"), `  ${key("tipo")}${pn(":")} ${str(p.tag)}${pn(",")}`, `  ${key("stack")}${pn(": [")}${p.stack.map(str).join(pn(", "))}${pn("],")}`,
                             `  ${key("autor")}${pn(":")} ${str("Matheus Zanin")}`, pn("}")].map(ln).join("");
     $("nep").textContent = `próximo · ${pad(n)}`;
