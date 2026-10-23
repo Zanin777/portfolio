@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Matheus Zanin — dev & game maker</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;900&display=swap" rel="stylesheet">
+<style>
+  :root { --bg:#0b0b0b; --card:#141414; --fg:#f5f5f5; --mute:#9a9a9a; --accent:#e6b400; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  html { scroll-behavior:smooth; }
+  body { background:var(--bg); color:var(--fg); font-family:Archivo, system-ui, sans-serif; line-height:1.6; }
+  a { color:inherit; }
+
+  /* ---------- HERO ---------- */
+  .hero { position:relative; min-height:100vh; padding:48px 60px; display:grid;
+          grid-template-columns:1fr 1.2fr 1fr; grid-template-rows:auto 1fr auto; overflow:hidden; }
+  .logo { font-weight:900; font-size:22px; letter-spacing:.5px; text-decoration:none; }
+  .logo span { color:var(--accent); }
+  nav { grid-row:1; grid-column:2 / 4; justify-self:end; position:relative; z-index:2; display:flex; gap:36px; }
+  nav a { text-decoration:none; font-weight:600; font-size:14px; letter-spacing:1.5px; text-transform:uppercase; color:var(--mute); transition:color .2s; }
+  nav a:hover { color:var(--fg); }
+
+  .intro { grid-row:2; align-self:center; max-width:320px; position:relative; z-index:2; }
+  .intro p { font-size:15px; color:#d6d6d6; margin-bottom:24px; }
+  .intro a { font-weight:600; text-underline-offset:4px; }
+
+  .figure { grid-row:1 / 4; grid-column:2; position:relative; display:flex; align-items:flex-end; justify-content:center; }
+  .circle { position:absolute; top:50%; left:50%; width:min(36vw,520px); aspect-ratio:1; border-radius:50%;
+            background:var(--accent); transform:translate(-50%,-50%); animation:pop 1s cubic-bezier(.2,.9,.3,1.2) both; }
+  .figure img { position:relative; max-height:92vh; max-width:100%; filter:grayscale(1) contrast(1.1); animation:rise 1s .2s ease-out both; }
+  .monogram { position:relative; align-self:center; font-weight:900; font-size:min(16vw,220px); color:var(--bg); letter-spacing:-6px; }
+
+  h1 { grid-row:2; grid-column:3; align-self:center; justify-self:end; text-align:center;
+       font-weight:900; font-size:clamp(64px,9vw,140px); line-height:.95; letter-spacing:-3px; position:relative; z-index:2; }
+  h1 span { display:block; animation:rise .8s ease-out both; }
+  h1 span:nth-child(2) { animation-delay:.1s; }
+  h1 span:nth-child(3) { animation-delay:.2s; }
+  h1 em { font-style:normal; color:var(--accent); }
+
+  .social { grid-row:3; display:flex; gap:20px; align-items:center; position:relative; z-index:2; }
+  .social a { color:var(--mute); transition:color .2s; display:flex; }
+  .social a:hover { color:var(--accent); }
+  .social svg { width:22px; height:22px; fill:none; stroke:currentColor; stroke-width:1.6; }
+  .place { grid-row:3; grid-column:3; justify-self:end; align-self:center; font-weight:600; font-size:14px; }
+
+  @keyframes pop { from { transform:translate(-50%,-50%) scale(0); } }
+  @keyframes rise { from { opacity:0; transform:translateY(40px); } }
+
+  /* ---------- SECTIONS ---------- */
+  section { padding:120px 60px; max-width:1240px; margin:0 auto; }
+  .label { color:var(--accent); font-weight:600; font-size:13px; letter-spacing:3px; text-transform:uppercase; margin-bottom:12px; }
+  h2 { font-weight:900; font-size:clamp(40px,6vw,80px); line-height:1; letter-spacing:-2px; margin-bottom:56px; }
+
+  .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(340px,1fr)); gap:24px; }
+  .card { background:var(--card); border-radius:12px; padding:36px; position:relative; overflow:hidden; text-decoration:none;
+          transition:transform .3s; }
+  .card::before { content:""; position:absolute; width:180px; height:180px; border-radius:50%; background:var(--accent);
+                  right:-60px; top:-60px; transition:transform .5s; }
+  .card:hover { transform:translateY(-6px); }
+  .card:hover::before { transform:scale(1.6); }
+  .card .tag { position:relative; font-size:12px; letter-spacing:2px; text-transform:uppercase; color:var(--mute); }
+  .card h3 { position:relative; font-size:30px; font-weight:900; margin:60px 0 10px; }
+  .card p { position:relative; color:#c8c8c8; font-size:15px; }
+  .card .stack { position:relative; margin-top:20px; font-size:13px; color:var(--accent); font-weight:600; }
+
+  .about { display:grid; grid-template-columns:1fr 1fr; gap:60px; align-items:start; }
+  .about p { color:#d0d0d0; font-size:18px; margin-bottom:20px; }
+  .skills { display:flex; flex-wrap:wrap; gap:10px; }
+  .skills span { border:1px solid #333; border-radius:999px; padding:8px 18px; font-size:14px; }
+
+  .contact { text-align:center; }
+  .contact h2 { margin-bottom:24px; }
+  .btn { display:inline-block; background:var(--accent); color:var(--bg); font-weight:900; text-decoration:none;
+         padding:18px 40px; border-radius:999px; font-size:18px; transition:transform .2s; }
+  .btn:hover { transform:scale(1.05); }
+  footer { text-align:center; color:var(--mute); font-size:13px; padding:40px; }
+
+  /* ---------- MOBILE ---------- */
+  @media (max-width:860px) {
+    .hero { padding:24px 16px; grid-template-columns:1fr; grid-template-rows:auto auto auto auto auto; gap:24px; min-height:auto; }
+    nav { grid-column:1; grid-row:1; justify-self:end; gap:16px; }
+    nav a { font-size:11px; letter-spacing:1px; }
+    .logo { grid-row:1; grid-column:1; }
+    .figure { grid-row:2; grid-column:1; height:70vw; }
+    .circle { width:70vw; }
+    .figure img { max-height:100%; }
+    h1 { grid-row:3; grid-column:1; justify-self:center; }
+    .intro { grid-row:4; max-width:none; }
+    .social { grid-row:5; grid-column:1; }
+    .place { grid-row:5; grid-column:1; }
+    section { padding:72px 16px; }
+    .grid { grid-template-columns:1fr; }
+    .about { grid-template-columns:1fr; gap:24px; }
+  }
+  @media (max-width:520px) { nav { display:none; } }
+  @media (prefers-reduced-motion:reduce) { * { animation:none !important; transition:none !important; } }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <a class="logo" href="#">zanin<span>.</span></a>
+  <nav>
+    <a href="#">Home</a>
+    <a href="#projetos">Projetos</a>
+    <a href="#sobre">Sobre</a>
+    <a href="#contato">Contato</a>
+  </nav>
+
+  <div class="intro">
+    <p>Sou Matheus Zanin, desenvolvedor full-stack e criador de jogos. Construo sites que vendem e mundos que dá vontade de explorar.</p>
+    <a href="#projetos">Ver projetos</a>
+  </div>
+
+  <div class="figure">
+    <div class="circle"></div>
+    <!-- coloque sua foto recortada (PNG sem fundo) como foto.png nesta pasta -->
+    <img src="foto.png" alt="Foto de Matheus Zanin" onerror="this.outerHTML='<span class=monogram>MZ</span>'">
+  </div>
+
+  <h1><span>eu</span><span>crio</span><span>mundos<em>.</em></span></h1>
+
+  <div class="social">
+    <a href="https://github.com/Zanin777" aria-label="GitHub" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.9a3.4 3.4 0 0 0-.9-2.6c3.1-.4 6.4-1.5 6.4-7A5.4 5.4 0 0 0 20 4.8 5 5 0 0 0 19.9 1S18.7.7 16 2.5a13.4 13.4 0 0 0-7 0C6.3.7 5.1 1 5.1 1A5 5 0 0 0 5 4.8a5.4 5.4 0 0 0-1.5 3.7c0 5.4 3.3 6.6 6.4 7a3.4 3.4 0 0 0-.9 2.6V22"/></svg>
+    </a>
+    <a href="#" aria-label="Instagram">
+      <svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r=".5"/></svg>
+    </a>
+    <a href="#" aria-label="LinkedIn">
+      <svg viewBox="0 0 24 24"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7h-4v-7a6 6 0 0 1 6-6zM2 9h4v12H2z"/><circle cx="4" cy="4" r="2"/></svg>
+    </a>
+  </div>
+  <div class="place">Brasil</div>
+</header>
+
+<section id="projetos">
+  <div class="label">Trabalhos</div>
+  <h2>Projetos<em style="color:var(--accent);font-style:normal">.</em></h2>
+  <div class="grid">
+    <a class="card" href="#">
+      <div class="tag">Jogo · Tático</div>
+      <h3>Crimson Vigil</h3>
+      <p>RPG tático por turnos com mundo aberto explorável, movimento livre e HUD inspirada em BG3.</p>
+      <div class="stack">Three.js · Unity 6 · Blender</div>
+    </a>
+    <a class="card" href="#">
+      <div class="tag">Jogo · Tower Defense</div>
+      <h3>Guardião do Bosque</h3>
+      <p>Tower defense 2.5D com sistema de evolução de torres.</p>
+      <div class="stack">Godot 4 · GDScript</div>
+    </a>
+    <a class="card" href="#">
+      <div class="tag">Web App</div>
+      <h3>RiffForge</h3>
+      <p>Gerador de tablaturas e riffs de metal.</p>
+      <div class="stack">Spring Boot · JavaScript</div>
+    </a>
+    <a class="card" href="#">
+      <div class="tag">Jogo · Deck-builder</div>
+      <h3>Alchemist's Covenant</h3>
+      <p>Deck-builder com tema alquímico e reações entre cartas.</p>
+      <div class="stack">JavaScript</div>
+    </a>
+  </div>
+</section>
+
+<section id="sobre">
+  <div class="label">Quem sou</div>
+  <h2>Sobre<em style="color:var(--accent);font-style:normal">.</em></h2>
+  <div class="about">
+    <div>
+      <p>Programo do back-end ao pixel. Gosto de projetos com personalidade: interfaces limpas, jogos com identidade e código que não pesa.</p>
+      <p>Também faço sites e landing pages sob medida para negócios que querem vender mais.</p>
+    </div>
+    <div class="skills">
+      <span>Java</span><span>Spring Boot</span><span>JavaScript</span><span>Three.js</span>
+      <span>Unity / C#</span><span>Godot</span><span>Blender</span><span>HTML & CSS</span>
+    </div>
+  </div>
+</section>
+
+<section id="contato" class="contact">
+  <div class="label">Bora conversar</div>
+  <h2>Tem um projeto<em style="color:var(--accent);font-style:normal">?</em></h2>
+  <a class="btn" href="mailto:matheuszaninps4@gmail.com">Fale comigo</a>
+</section>
+
+<footer>© 2026 Matheus Zanin</footer>
+</body>
+</html>
