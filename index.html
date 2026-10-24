@@ -106,6 +106,8 @@
   .pose { position:absolute; left:var(--left, 0px); top:var(--top, 64px); height:calc(var(--zoom, 1) * (100% - var(--top, 64px))); opacity:0;
           filter:grayscale(1) brightness(var(--lift, 1.18)) contrast(1.12); mix-blend-mode:multiply; }
   .pose[data-flip] { scale:-1 1; }
+  /* ASCII echo of the current pose, sized by JS into the gap between photo and title (hidden when there is none) */
+  .ascii { position:absolute; left:0; top:0; display:none; pointer-events:none; }
   .pose.on { opacity:1; }
 
   /* no transform/z-index here: .title must not form a stacking context, so the text pieces below can blend
@@ -445,6 +447,7 @@
     <img class="pose" src="foto3.webp" style="--zoom:1.35; --top:24px; --mx:20%" alt="Matheus Zanin de terno e óculos escuros">
     <img class="pose" src="foto4.webp" data-flip style="--zoom:1.25; --top:32px; --mx:20%" alt="Matheus Zanin de perfil, de gola alta">
   </div>
+  <canvas class="ascii" id="ascii" aria-hidden="true"></canvas>
 
   <div class="title">
     <div class="meta" id="meta"></div>
@@ -963,6 +966,78 @@
     c.animate([{ transform: "none" }, { transform: "translateY(-100%)" }], { duration: 1000, easing: "cubic-bezier(.76,0,.24,1)", fill: "forwards" }).onfinish = () => c.remove();
     autoplay();
   });
+
+  // ASCII portrait in the gap between photo and title: rebuilt from the current pose, it scrambles in on every
+  // project change and the glyphs near the cursor keep re-rolling
+  {
+    const cv = $("ascii"), g = cv.getContext("2d"), off = document.createElement("canvas").getContext("2d", { willReadFrequently: true });
+    const RAMP = "@%#*+=-:. ", NOISE = "01{}[]<>/\\=;:*+#", FS = 9, CW = FS * .6, LH = FS;
+    let cols = 0, rows = 0, box = null, target = [], settle = [], mx = -99, my = -99, araf = 0;
+    const rnd = () => NOISE[Math.random() * NOISE.length | 0];
+    function build(scramble) {
+      const pose = shown, t = document.querySelector(".title h1").getBoundingClientRect(), h = hero.getBoundingClientRect();
+      const left = pose.getBoundingClientRect().right - h.left + 32, right = t.left - h.left - 40;
+      if (right - left < 200 || !pose.naturalWidth) { cv.style.display = "none"; box = null; return; }
+      box = { x: left, y: 96, w: right - left, h: h.height - 136 };
+      cols = box.w / CW | 0; rows = box.h / LH | 0;
+      const k = devicePixelRatio || 1;
+      Object.assign(cv.style, { display: "block", left: box.x + "px", top: box.y + "px", width: cols * CW + "px", height: rows * LH + "px" });
+      cv.width = Math.round(cols * CW * k); cv.height = Math.round(rows * LH * k);
+      g.setTransform(k, 0, 0, k, 0, 0);
+      // sample the photo into one pixel per cell, zoomed onto the upper body (where the mid-tones and detail are)
+      off.canvas.width = cols; off.canvas.height = rows;
+      off.fillStyle = "#fff"; off.fillRect(0, 0, cols, rows);
+      const s = Math.max(box.w / (pose.naturalWidth * .8), box.h / pose.naturalHeight), dw = pose.naturalWidth * s / CW, dh = pose.naturalHeight * s / LH;
+      off.save();
+      if (pose.hasAttribute("data-flip")) { off.translate(cols, 0); off.scale(-1, 1); }
+      off.drawImage(pose, (cols - dw) / 2, 0, dw, dh);
+      off.restore();
+      const px = off.getImageData(0, 0, cols, rows).data, now = performance.now(), lum = [];
+      let lo = 1, hi = 0;
+      for (let p = 0; p < cols * rows; p++) {
+        const l = (px[p * 4] * .3 + px[p * 4 + 1] * .59 + px[p * 4 + 2] * .11) / 255;
+        lum.push(l);
+        if (l <= .82) { lo = Math.min(lo, l); hi = Math.max(hi, l); }
+      }
+      target = []; settle = [];
+      for (const l of lum) {
+        const n = Math.sqrt(Math.max(0, (l - lo) / (hi - lo || 1)));  // stretch the subject's own range so dark clothes keep some texture
+        target.push(l > .82 ? " " : RAMP[Math.min(RAMP.length - 2, n * (RAMP.length - 1) | 0)]);  // the light backdrop drops out
+        settle.push(scramble && !calm ? now + Math.random() * 900 : 0);
+      }
+      kick();
+    }
+    function draw() {
+      araf = 0;
+      if (!box) return;
+      const now = performance.now();
+      let busy = false;
+      g.clearRect(0, 0, cols * CW, rows * LH);
+      g.font = `${FS}px ${getComputedStyle(document.body).getPropertyValue("--mono")}`;
+      g.fillStyle = "#0d0d0d"; g.textBaseline = "top";
+      for (let r = 0; r < rows; r++) {
+        let line = "";
+        for (let c = 0; c < cols; c++) {
+          const p = r * cols + c, near = (c - mx) ** 2 + ((r - my) * 1.6) ** 2 < 36;
+          if (settle[p] > now) { busy = true; line += target[p] === " " && Math.random() < .7 ? " " : rnd(); }
+          else line += near && target[p] !== " " ? rnd() : target[p];
+        }
+        g.fillText(line, 0, r * LH);
+      }
+      if (busy || mx > -99) kick();
+    }
+    const kick = () => araf ||= requestAnimationFrame(draw);
+    new MutationObserver(() => build(true)).observe(document.querySelector(".figure"), { subtree: true, attributeFilter: ["class"] });
+    addEventListener("resize", () => build(false));
+    document.fonts.ready.then(() => build(true));
+    if (!calm) hero.addEventListener("pointermove", e => {
+      if (!box) return;
+      const r = cv.getBoundingClientRect(), c = (e.clientX - r.left) / CW, w = (e.clientY - r.top) / LH;
+      [mx, my] = c > -6 && c < cols + 6 && w > -6 && w < rows + 6 ? [c, w] : [-99, -99];
+      kick();
+    });
+    hero.addEventListener("pointerleave", () => { mx = my = -99; kick(); });
+  }
 </script>
 </body>
 </html>
