@@ -12,6 +12,20 @@
 <meta property="og:image" content="https://zanin777.github.io/portfolio/og.jpg">
 <meta property="og:locale" content="pt_BR">
 <meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://zanin777.github.io/portfolio/">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": "Matheus Zanin",
+  "url": "https://zanin777.github.io/portfolio/",
+  "image": "https://zanin777.github.io/portfolio/og.jpg",
+  "jobTitle": "Desenvolvedor full-stack e criador de jogos",
+  "nationality": "BR",
+  "sameAs": ["https://github.com/Zanin777"],
+  "knowsAbout": ["Java", "Spring Boot", "JavaScript", "Three.js", "Unity", "C#", "Godot", "Blender"]
+}
+</script>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23111'/%3E%3Cpath d='M9 9h14v3L13.5 20H23v3H9v-3l9.5-8H9z' fill='%23fff'/%3E%3C/svg%3E">
 <script>document.documentElement.classList.add("js")</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -269,16 +283,16 @@
   .eps { padding-bottom:110px; }
   .eplist { list-style:none; border-bottom:1.5px solid var(--ink); }
   .eplist li { border-top:1.5px solid var(--ink); }
-  .eplist button { width:100%; display:grid; grid-template-columns:64px 1fr auto 28px; align-items:baseline; column-gap:24px; padding:22px 0; text-align:left; transition:opacity .3s; }
+  .eplist button { width:100%; display:grid; grid-template-columns:64px 1fr auto auto; align-items:baseline; column-gap:24px; padding:22px 0; text-align:left; transition:opacity .3s; }
   .eplist .n { font:800 13px Syne, sans-serif; }
   .eplist button[aria-current] .n::after { content:"● HEAD"; display:block; margin-top:6px; font:600 10px Archivo, sans-serif; letter-spacing:1.5px; text-transform:uppercase; }
   .eplist .t { font-family:Syne; font-weight:800; font-size:clamp(30px,5vw,72px); line-height:1; letter-spacing:-.02em; transition:transform .6s var(--ease); }
   .eplist i { font:italic 500 20px Fraunces, serif; }
   .eplist small { grid-column:2 / 4; margin-top:8px; font-size:11px; letter-spacing:1.5px; text-transform:uppercase; color:var(--mute); }
-  .eplist .go { font-size:20px; transition:translate .5s var(--ease); }
+  /* the build status as an outlined tag: no arrow, since the row opens the slide, not a link */
+  .eplist .go { align-self:center; border:1px solid currentColor; padding:3px 7px 2px; font:600 10px/1.2 var(--mono); letter-spacing:1px; text-transform:uppercase; white-space:nowrap; }
   .eplist:hover button:not(:hover) { opacity:.55; }
   .eplist button:is(:hover, :focus-visible) .t { transform:translateX(16px); }
-  .eplist button:is(:hover, :focus-visible) .go { translate:4px -4px; }
   /* a framed print of the episode's pose that follows the cursor; same multiply treatment, so no gray box */
   .epfig { position:fixed; left:0; top:0; z-index:5; width:220px; padding:8px; background:var(--bg); border:1.5px solid var(--ink); pointer-events:none;
            opacity:0; clip-path:inset(100% 0 0 0); transition:opacity .25s, clip-path .6s var(--ease); }
@@ -390,9 +404,10 @@
     .rhead::before { left:-4px; }
     .rhead::after { right:-4px; }
     .epfig { display:none; }
-    .eplist button { grid-template-columns:40px 1fr 20px; column-gap:12px; }
+    .eplist button { grid-template-columns:40px 1fr; column-gap:12px; }
     .eplist i { grid-column:2; grid-row:2; }
-    .eplist small { grid-column:2 / 4; }
+    .eplist small { grid-column:2; }
+    .eplist .go { grid-column:2; justify-self:start; margin-top:10px; }  /* the long tags do not fit beside the name */
     .eplist .t { font-size:30px; }
     .eplist button[aria-current] .n::after { content:"●"; }  /* the full label does not fit the 40px column */
     .about { grid-template-columns:1fr; }
@@ -444,6 +459,7 @@
     <img class="pose" src="foto5.webp" style="--zoom:1.3; --top:40px" alt="Matheus Zanin de óculos escuros, sobretudo e luvas, segurando o celular">
     <img class="pose" src="foto3.webp" style="--zoom:1.35; --top:24px; --mx:20%" alt="Matheus Zanin de terno e óculos escuros">
     <img class="pose" src="foto4.webp" data-flip style="--zoom:1.25; --top:32px; --mx:20%" alt="Matheus Zanin de perfil, de gola alta">
+    <img class="pose" src="foto6.webp" style="--zoom:1.15" alt="Matheus Zanin de óculos prateados, blazer e corrente, olhando para baixo">
   </div>
 
   <div class="title">
@@ -459,7 +475,7 @@
 
   <div class="counter">
     <div class="rd"><button class="state" id="pp" type="button">‖ pausar</button><span id="tc" aria-hidden="true"></span></div>
-    <i class="bar" id="segs" aria-hidden="true"></i><span class="clip"><span id="cur">01</span></span>/<sup id="tot">04</sup><span class="figcap" aria-hidden="true"><span class="clip"><span id="fig"></span></span></span>
+    <i class="bar" id="segs" aria-hidden="true"></i><span class="clip"><span id="cur">01</span></span>/<sup id="tot">05</sup><span class="figcap" aria-hidden="true"><span class="clip"><span id="fig"></span></span></span>
   </div>
   <div class="tagline"><span class="pr">&gt;</span> criando jogos <i class="amp">&amp;</i> sites<span class="caret" aria-hidden="true">_</span></div>
 </section>
@@ -487,7 +503,7 @@
 </div>
 
 <section class="wrap eps" id="episodios" aria-labelledby="eps-h">
-  <div class="rhead"><b></b><span>Projetos</span><span>4 repositórios · 2026</span></div>
+  <div class="rhead"><b></b><span>Projetos</span><span>5 projetos · 2026</span></div>
   <h2 id="eps-h" class="sr-only">Projetos</h2>
   <ol class="eplist" id="eplist"></ol>
   <figure class="epfig" id="epfig" aria-hidden="true"><img src="foto2.webp" alt=""><figcaption></figcaption></figure>
@@ -503,7 +519,7 @@
     <p class="lead" data-reveal>Sou Matheus Zanin, desenvolvedor full-stack e criador de jogos. Escrevo o back-end, modelo no Blender, programo o gameplay e desenho a interface: do servidor ao <em>pixel</em>.</p>
     <p data-reveal>Gosto de projetos com identidade: sites que vendem, jogos que dá vontade de explorar e código que não pesa. Cada projeto aqui é um repositório vivo: ainda em desenvolvimento, sempre com o próximo commit a caminho.</p>
     <dl class="stats" data-reveal>
-      <div><dt><span class="clip"><span>04</span></span></dt><dd>projetos em desenvolvimento</dd></div>
+      <div><dt><span class="clip"><span>05</span></span></dt><dd>projetos em desenvolvimento</dd></div>
       <div><dt><span class="clip"><span>03</span></span><sup><a href="#n1" id="r1" aria-label="nota 1">1</a></sup></dt><dd>engines: Unity, Godot e Three.js</dd></div>
       <div><dt><span class="clip"><span>01</span></span><sup><a href="#n2" id="r2" aria-label="nota 2">2</a></sup></dt><dd>dev, do servidor ao pixel</dd></div>
     </dl>
@@ -555,6 +571,7 @@
     { name:"Guardião do Bosque", tag:"tower defense", desc:"Tower defense 2.5D com evolução de torres e ondas de inimigos.", stack:["Godot 4", "GDScript"], status:"M10 concluído · em playtest" },
     { name:"RiffForge", tag:"web app", desc:"Gerador de tablaturas e riffs de metal.", stack:["Spring Boot", "Java", "JavaScript"], status:"em desenvolvimento", repo:"https://github.com/Zanin777/RiffForge" },
     { name:"Alchemist's Covenant", tag:"deck-builder", desc:"Deck-builder com tema alquímico e reações entre cartas.", stack:["JavaScript", "Canvas"], status:"protótipo · base pronta" },
+    { name:"zanin.dev", tag:"landing page", desc:"Landing page para vender criação de sites: buraco negro em WebGL, animações na rolagem e orçamento pelo WhatsApp.", stack:["HTML", "CSS", "JavaScript", "WebGL"], status:"no ar · v1", site:"https://zanin-dev.vercel.app" },
   ];
   const $ = id => document.getElementById(id), pad = n => String(n + 1).padStart(2, "0");
   const POSES = [...document.querySelectorAll(".pose")], LETTERS = [...document.querySelectorAll("h1 span")];
@@ -570,7 +587,7 @@
   const rise = (el, delay = 0) => anim(el, [{ opacity: 0, transform: "translateY(16px)" }, { opacity: 1, transform: "none" }], { duration: 700, delay });
   const shot = (img, src, delay) => { img.src = src; anim(img, [{ opacity: 0, transform: "scale(1.25)" }, { opacity: 1, transform: "scale(1)" }], { duration: 1100, delay }); };
   const slug = n => n.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f']/g, "").replace(/[^a-z0-9]+/g, "-");
-  const cap = k => `<b>Fig. ${pad(k)}</b>${POSES[k].alt.replace(/^Matheus Zanin /, "")}`;
+  const cap = k => `<b>Fig. ${pad(k)}</b>${POSES[k % POSES.length].alt.replace(/^Matheus Zanin /, "")}`;
 
   // split-flap: the piece folds away edge-on, `swap` changes it while it is hidden, then it folds back in
   function flap(el, d, delay, swap) {
@@ -625,7 +642,7 @@
     $("tbadge").textContent = p.stack[0];
     // editor panels: markdown on the left, JSON on the right, each line numbered by CSS
     const ln = l => `<li><span>${l}</span></li>`, str = v => `<span class="s">"${v}"</span>`, key = v => `<span class="k">"${v}"</span>`, pn = v => `<span class="pn">${v}</span>`;
-    $("readme").innerHTML = [`<span class="h"># ${p.name}</span>`, p.desc, "", `<span class="cm">&gt; status: ${p.status}</span><span class="caret" aria-hidden="true">▍</span>`, ...(p.repo ? [`<a class="h" href="${p.repo}" target="_blank" rel="noopener" data-cursor="Abrir ↗">$ open github ↗</a>`] : [])].map(ln).join("");
+    $("readme").innerHTML = [`<span class="h"># ${p.name}</span>`, p.desc, "", `<span class="cm">&gt; status: ${p.status}</span><span class="caret" aria-hidden="true">▍</span>`, ...(p.site || p.repo ? [`<a class="h" href="${p.site || p.repo}" target="_blank" rel="noopener" data-cursor="Abrir ↗">$ open ${p.site ? "site" : "github"} ↗</a>`] : [])].map(ln).join("");
     $("stack").innerHTML = [pn("{"), `  ${key("tipo")}${pn(":")} ${str(p.tag)}${pn(",")}`, `  ${key("stack")}${pn(": [")}${p.stack.map(str).join(pn(", "))}${pn("],")}`,
                             `  ${key("autor")}${pn(":")} ${str("Matheus Zanin")}`, pn("}")].map(ln).join("");
     $("nep").textContent = `próximo · ${pad(n)}`;
@@ -708,12 +725,12 @@
   }, { threshold: .35 }).observe(hero);
 
   // episode index
-  $("eplist").innerHTML = P.map((p, k) => `<li><button type="button" data-k="${k}" data-cursor="Abrir"><span class="n">${pad(k)}</span><span class="t">${p.name}</span><i>${p.tag}</i><span class="go" aria-hidden="true">↗</span><small>${p.stack.join(" · ")}</small></button></li>`).join("");
+  $("eplist").innerHTML = P.map((p, k) => `<li><button type="button" data-k="${k}" data-cursor="Abrir"><span class="n">${pad(k)}</span><span class="t">${p.name}</span><i>${p.tag}</i><span class="go">${p.status.split(" · ")[0]}</span><small>${p.stack.join(" · ")}</small></button></li>`).join("");
   $("eplist").onclick = e => { const b = e.target.closest("button"); if (b) jump(+b.dataset.k); };
   const epfig = $("epfig"), epimg = epfig.querySelector("img"), epcap = epfig.querySelector("figcaption");
   let fx = 0, fy = 0, ftx = 0, fty = 0, fraf = 0;
   function showPrint(k) {
-    const im = POSES[k];
+    const im = POSES[k % POSES.length];
     epimg.src = im.src;
     epimg.style.setProperty("--lift", im.style.getPropertyValue("--lift") || "1.18");
     epimg.style.scale = im.hasAttribute("data-flip") ? "-1 1" : "";
